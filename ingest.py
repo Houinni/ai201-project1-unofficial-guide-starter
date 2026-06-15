@@ -459,19 +459,21 @@ def load_and_chunk(documents_dir: str = 'documents') -> list[Chunk]:
 
 
 def print_samples(chunks: list[Chunk]) -> None:
-    """Print one representative chunk per doc type."""
-    print('\n── Sample chunk per doc type ───────────────────────────────────────────')
+    """Print the first chunk from every source file (one per file)."""
+    print('\n── Sample chunk per source file ────────────────────────────────────────')
     seen: set[str] = set()
     for c in chunks:
-        if c.doc_type not in seen:
-            seen.add(c.doc_type)
-            print(f'\n[{c.doc_type.upper()}]  {c.source_file}')
-            print(f'section: {c.section!r}   tokens: {c.token_count}')
+        if c.source_file not in seen:
+            seen.add(c.source_file)
+            print(f'\n[{c.doc_type.upper()}]  {c.source_file}   '
+                  f'chunk {c.chunk_index}   {c.token_count} tok')
+            if c.section:
+                print(f'section: {c.section!r}')
             print('─' * 60)
-            # Truncate at the last complete line within 600 chars
-            if len(c.text) > 600:
-                cutoff = c.text[:600].rfind('\n')
-                preview = c.text[:cutoff] if cutoff > 0 else c.text[:600]
+            # Show up to 400 chars, cutting at the last complete line
+            if len(c.text) > 400:
+                cutoff = c.text[:400].rfind('\n')
+                preview = c.text[:cutoff] if cutoff > 0 else c.text[:400]
                 print(preview + '\n…')
             else:
                 print(c.text)
