@@ -364,7 +364,11 @@ def chunk_wiki(text: str, src: str, lang: str) -> list[Chunk]:
 
     for header, body in sections:
         section_name = re.sub(r'^##+ ', '', header).strip()
-        full         = f'{header}\n\n{body}'.strip()
+        if not body.strip():
+            # Skip header-only sections (body is empty because sub-sections
+            # follow immediately, e.g. ## Discography → ### Digital Singles)
+            continue
+        full = f'{header}\n\n{body}'.strip()
 
         if count_tokens(full) <= CHUNK_SIZE:
             chunks.append(Chunk(full, src, lang, 'wiki', section_name, idx))

@@ -45,21 +45,12 @@
     "token_count": 74
   },
   {
-    "text": "## Discography",
-    "source_file": "evan-born-2001-kpop-wiki.en.md",
-    "language": "en",
-    "doc_type": "wiki",
-    "section": "Discography",
-    "chunk_index": 5,
-    "token_count": 1
-  },
-  {
     "text": "### Digital Singles\n\n| Title | Year |\n| --- | --- |\n| \"Ride or Die\" | 2026 |",
     "source_file": "evan-born-2001-kpop-wiki.en.md",
     "language": "en",
     "doc_type": "wiki",
     "section": "Digital Singles",
-    "chunk_index": 6,
+    "chunk_index": 5,
     "token_count": 10
   },
   {
@@ -68,7 +59,7 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Features",
-    "chunk_index": 7,
+    "chunk_index": 6,
     "token_count": 16
   },
   {
@@ -77,17 +68,8 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Other Releases",
-    "chunk_index": 8,
+    "chunk_index": 7,
     "token_count": 9
-  },
-  {
-    "text": "## Filmography",
-    "source_file": "evan-born-2001-kpop-wiki.en.md",
-    "language": "en",
-    "doc_type": "wiki",
-    "section": "Filmography",
-    "chunk_index": 9,
-    "token_count": 1
   },
   {
     "text": "### Reality Shows\n\n| Show | Network | Year | Role |\n| --- | --- | --- | --- |\n| I-LAND | Mnet | 2020 | Contestant |",
@@ -95,7 +77,7 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Reality Shows",
-    "chunk_index": 10,
+    "chunk_index": 8,
     "token_count": 14
   },
   {
@@ -104,7 +86,7 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Writing Credits",
-    "chunk_index": 11,
+    "chunk_index": 9,
     "token_count": 141
   },
   {
@@ -113,7 +95,7 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Awards And Nominations",
-    "chunk_index": 12,
+    "chunk_index": 10,
     "token_count": 28
   },
   {
@@ -122,7 +104,7 @@
     "language": "en",
     "doc_type": "wiki",
     "section": "Trivia",
-    "chunk_index": 13,
+    "chunk_index": 11,
     "token_count": 162
   },
   {
