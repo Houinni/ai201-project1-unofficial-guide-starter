@@ -76,13 +76,13 @@ If deploying for real users with no cost constraint, the tradeoffs to weigh woul
 
 ## Evaluation Plan
 
-| # | Question | Expected answer |
-|---|----------|-----------------|
-| 1 | What score did Heeseung receive for his Fake Love performance on I-LAND, and what was notable about it? | He received a score of 93 — the highest individual mark given by the producers on the show. |
-| 2 | How did Heeseung get discovered by Big Hit Entertainment? | He failed his arts high school audition because he was introverted and did not know how to show himself. As he walked out, Big Hit's rookie development team noticed him for his looks and signed him on the spot. He was wearing a long red padded coat. |
-| 3 | What is Heeseung's go-to convenience store order? | Buldak noodles, a spicy-sauce triangle kimbap, a cheese stick, and mandarin jelly. |
-| 4 | What did Heeseung say in his MTV News interview about balancing work and personal investment? | He said that focusing on work is also part of investing in himself, and that he does not think of the two as different things. (MTV News interview, April 2021) |
-| 5 | What is Heeseung's favorite fruit, and what drink does he order at Gong Cha? | His favorite fruit is strawberry. At Gong Cha, he orders taro milk tea. |
+| # | Question | Expected answer | Retrieval result (`--lang en`, k=5) |
+|---|----------|-----------------|--------------------------------------|
+| 1 | What score did Heeseung receive for his Fake Love performance on I-LAND, and what was notable about it? | He received a score of 93 — the highest individual mark given by the producers on the show. | ✅ Correct chunk (`evan-born-2001-kpop-wiki.en.md` § Trivia) at **rank 4**, score 0.57. Top-3 results contain related I-LAND context. |
+| 2 | How did Heeseung get discovered by Big Hit Entertainment? | He failed his arts high school audition because he was introverted and did not know how to show himself. As he walked out, Big Hit's rookie development team noticed him for his looks and signed him on the spot. He was wearing a long red padded coat. | ❌ Correct chunk (`heeseung-50-little-facts.en.md` chunk 1) not in top 5 (ranks 52nd, score 0.79). Root cause: vocabulary gap — the model does not bridge "discovered by" ↔ "rookie development team noticed him." See Anticipated Challenge #2. |
+| 3 | What is Heeseung's go-to convenience store order? | Buldak noodles, a spicy-sauce triangle kimbap, a cheese stick, and mandarin jelly. | ✅ Correct chunk (`heeseung-tmi.en.md` § Food And Drink TMI) at **rank 1**, score 0.51. |
+| 4 | What did Heeseung say in his MTV News interview about balancing work and personal investment? | He said that focusing on work is also part of investing in himself, and that he does not think of the two as different things. (MTV News interview, April 2021) | ✅ Correct chunk (`heeseung-interviews-growth-leadership.en.md` chunk 4) at **rank 1**, score 0.49. |
+| 5 | What is Heeseung's favorite fruit, and what drink does he order at Gong Cha? | His favorite fruit is strawberry. At Gong Cha, he orders taro milk tea. | ✅ Correct chunk (`heeseung-daily-preferences-tmi.en.md` § Food And Drink TMI) at **rank 1**, score 0.33. |
 
 ---
 
