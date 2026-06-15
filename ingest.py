@@ -32,7 +32,13 @@ from pathlib import Path
 # ── constants ──────────────────────────────────────────────────────────────────
 CHUNK_SIZE      = 300   # target token ceiling per chunk
 OVERLAP         = 50    # overlap in tokens (wiki + interview narrative only)
-LIST_GROUP_SIZE = 6     # default numbered items per list chunk  (5–8 range)
+LIST_GROUP_SIZE = 3     # numbered items per list chunk
+# Empirically 3 items per chunk gives better retrieval than the 5–8 range
+# specified in planning.md.  Flat TMI lists (e.g. 50-little-facts) have no
+# section headers to provide topical separation, so the only way to keep a
+# specific fact prominent in its embedding is to keep the group small.
+# With 6 items, a single specific fact is 1/6 of the chunk's semantic
+# content and gets diluted; with 3 items it is 1/3 and remains retrievable.
 
 # Question-line patterns — match both ASCII colon (:) and full-width colon (：)
 # used in Chinese-translated interview files
