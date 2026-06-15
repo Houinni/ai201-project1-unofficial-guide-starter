@@ -47,7 +47,7 @@ This knowledge is valuable because fans actively seek the personal, human side o
 
 The corpus has three distinct structures that each warrant a different split rule, all targeting the same 300-token ceiling:
 
-- **TMI / numbered-list files** (`*-tmi.md`, `50-little-facts.md`): Each numbered item is 20–60 tokens — too short to embed meaningfully on its own. Group 5–8 consecutive items per chunk, keeping items within the same section heading together (e.g., all "Food and Drink" items stay in one chunk). This produces dense, topically coherent embeddings without mixing unrelated facts.
+- **TMI / numbered-list files** (`*-tmi.md`, `50-little-facts.md`): Each numbered item is 20–60 tokens — too short to embed meaningfully on its own. Group **3 consecutive items** per chunk, keeping items within the same section heading together (e.g., all "Food and Drink" items stay in one chunk). This was initially set to 5–8 items, but empirical testing showed that with 6 items per chunk a specific fact is only 1/6 of the chunk's semantic content and gets diluted in the embedding — especially in flat lists like `50-little-facts` that have no section headers to provide topical separation. With 3 items, each fact is 1/3 of the chunk and retrieves more reliably against specific queries.
 - **Interview Q&A files** (`*-interviews-*.md`, `*-reflections.md`): Each date-headed Q&A exchange (question + full answer) is a natural unit of meaning at roughly 80–200 tokens. One exchange = one chunk. The date header is prepended to every chunk as metadata context.
 - **Wiki page** (`evan-born-2001-kpop-wiki.en.md`): Split at `##` section headers. Sections under 300 tokens stay whole; sections over 400 tokens are split further at paragraph breaks.
 
