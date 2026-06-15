@@ -34,14 +34,15 @@ CHUNK_SIZE      = 300   # target token ceiling per chunk
 OVERLAP         = 50    # overlap in tokens (wiki + interview narrative only)
 LIST_GROUP_SIZE = 6     # default numbered items per list chunk  (5–8 range)
 
-# Question-line patterns found in the interview files
+# Question-line patterns — match both ASCII colon (:) and full-width colon (：)
+# used in Chinese-translated interview files
 _Q_PATTERNS = re.compile(
-    r'^(Q:|MTV News:|GQ:)\s*',
+    r'^(Q[：:]|MTV News[：:]|GQ[：:])\s*',
     re.IGNORECASE,
 )
-# Answer-line patterns
+# Answer-line patterns (same dual-colon handling)
 _A_PATTERNS = re.compile(
-    r'^(A:|🦌:|Heeseung:)\s*',
+    r'^(A[：:]|🦌[：:]|Heeseung[：:])\s*',
 )
 # Date section header  e.g.  ## 221126
 _DATE_HEADER = re.compile(r'^## (\d{6})\s*$')
@@ -203,11 +204,11 @@ class Chunk:
 # ── list chunker ───────────────────────────────────────────────────────────────
 def chunk_list(text: str, src: str, lang: str) -> list[Chunk]:
     """
-    Groups 5–8 numbered items per chunk.
-    Flushes the current group whenever:
-      · a ## section header is encountered  (never cross section boundaries)
-      · LIST_GROUP_SIZE items have been collected
-      · adding the next item would push the chunk over CHUNK_SIZE tokens
+    Groups 5–8 numbered items per chunk using only natural paragraph boundaries:
+      · Flush at every ## section header  (never cross section boundaries)
+      · Flush after LIST_GROUP_SIZE items have been collected
+    Token count is NOT used as a hard cutoff — every item is always emitted
+    complete so no sentence is ever split mid-way.
     No overlap.
     """
     chunks: list[Chunk] = []
@@ -251,11 +252,8 @@ def chunk_list(text: str, src: str, lang: str) -> list[Chunk]:
             items.append(' '.join(item_parts))
             i = j
 
-            # Flush if group size OR token ceiling reached
-            if (
-                len(items) >= LIST_GROUP_SIZE
-                or count_tokens('\n'.join(items)) >= CHUNK_SIZE
-            ):
+            # Flush only when group size is reached — never on token count
+            if len(items) >= LIST_GROUP_SIZE:
                 idx   = flush(section, items, idx)
                 items = []
             continue
@@ -269,12 +267,12 @@ def chunk_list(text: str, src: str, lang: str) -> list[Chunk]:
 # ── interview chunker ──────────────────────────────────────────────────────────
 def chunk_interview(text: str, src: str, lang: str) -> list[Chunk]:
     """
-    Emits one chunk per Q&A exchange.
-    Exchange boundary = the next question-starter line.
+    Emits one chunk per Q&A exchange (or per standalone paragraph/message).
+    Exchange boundary = the next question-starter line or date/sub-section header.
     Date header (## XXXXXX) and optional sub-section (### NAME) are
-    prepended to every chunk in that section.
-    If a single exchange still exceeds CHUNK_SIZE + OVERLAP tokens it is
-    split at blank-line boundaries with OVERLAP-token carry-over.
+    prepended to every chunk for context.
+    Chunks are NEVER split mid-exchange — every chunk is a semantically
+    complete paragraph regardless of token count.
     """
     chunks: list[Chunk] = []
     idx       = 0
@@ -294,33 +292,9 @@ def chunk_interview(text: str, src: str, lang: str) -> list[Chunk]:
             return idx
         prefix = make_prefix(date, sub)
         full   = (f'{prefix}\n\n{body}' if prefix else body).strip()
-
-        if count_tokens(full) <= CHUNK_SIZE + OVERLAP:
-            chunks.append(Chunk(full, src, lang, 'interview', sub or date, idx))
-            return idx + 1
-
-        # Oversized exchange → split at blank-line boundaries with overlap
-        paragraphs = re.split(r'\n{2,}', full)
-        buf: list[str] = []
-        buf_toks = 0
-        for para in paragraphs:
-            pt = count_tokens(para)
-            if buf and buf_toks + pt > CHUNK_SIZE:
-                chunks.append(Chunk('\n\n'.join(buf).strip(), src, lang,
-                                    'interview', sub or date, idx))
-                idx += 1
-                # carry-over: keep the last paragraph if it fits in OVERLAP
-                tail  = buf[-1] if count_tokens(buf[-1]) <= OVERLAP else ''
-                buf   = ([tail] if tail else []) + [para]
-                buf_toks = count_tokens('\n\n'.join(buf))
-            else:
-                buf.append(para)
-                buf_toks += pt
-        if buf:
-            chunks.append(Chunk('\n\n'.join(buf).strip(), src, lang,
-                                'interview', sub or date, idx))
-            idx += 1
-        return idx
+        # Always emit the full exchange — never split mid-paragraph
+        chunks.append(Chunk(full, src, lang, 'interview', sub or date, idx))
+        return idx + 1
 
     lines = text.splitlines()
     i = 0
@@ -484,8 +458,13 @@ def print_samples(chunks: list[Chunk]) -> None:
             print(f'\n[{c.doc_type.upper()}]  {c.source_file}')
             print(f'section: {c.section!r}   tokens: {c.token_count}')
             print('─' * 60)
-            preview = c.text[:600]
-            print(preview + (' …' if len(c.text) > 600 else ''))
+            # Truncate at the last complete line within 600 chars
+            if len(c.text) > 600:
+                cutoff = c.text[:600].rfind('\n')
+                preview = c.text[:cutoff] if cutoff > 0 else c.text[:600]
+                print(preview + '\n…')
+            else:
+                print(c.text)
 
 
 if __name__ == '__main__':
